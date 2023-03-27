@@ -34,6 +34,15 @@ provider "google" {
   zone    = "${local.region}-a"
 }
 
+resource "google_project_service" "cloud_resource_manager_api" {
+  project = var.project_id
+  service = "cloudresourcemanager.googleapis.com"
+
+  timeouts {
+    create = "5m"
+  }
+}
+
 resource "google_project_service" "compute_api" {
   project = var.project_id
   service = "compute.googleapis.com"
@@ -49,16 +58,6 @@ resource "google_project_service" "cloud_run_api" {
 
   timeouts {
     create = "5m"
-  }
-}
-
-resource "google_project_service" "cloud_resource_manager_api" {
-  project = var.project_id
-  service = "cloudresourcemanager.googleapis.com"
-
-  timeouts {
-    create = "10m"
-    update = "10m"
   }
 }
 
