@@ -34,6 +34,16 @@ provider "google" {
   zone    = "${local.region}-a"
 }
 
+resource "google_project_service" "project" {
+  project = var.project_id
+  service = "compute.googleapis.com"
+}
+
+resource "google_project_service" "project" {
+  project = var.project_id
+  service = "run.googleapis.com"
+}
+
 # cloud run service for the api
 resource "google_cloud_run_service" "api" {
   name     = local.service_name
