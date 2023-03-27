@@ -1,0 +1,56 @@
+steps:
+  - name: "gcr.io/cloud-builders/gsutil"
+    entrypoint: "bash"
+    args:
+      [
+        "-c",
+        "gsutil ls -b gs://$PROJECT_ID-tf-state || gsutil mb gs://$PROJECT_ID-tf-state",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "./ui",
+        "-t",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/nginx-ui:$SHORT_SHA",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/nginx-ui:$SHORT_SHA",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/node-app:$SHORT_SHA",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/node-app:$SHORT_SHA",
+      ]
+  - id: "tf init"
+    name: "hashicorp/terraform:1.0.0"
+    entrypoint: sh
+    args:
+      [
+        "-c",
+        'terraform -chdir=terraform init -upgrade -backend-config="bucket=$PROJECT_ID-tf-state"',
+      ]
+  - id: "tf plan"
+    name: "hashicorp/terraform:1.0.0"
+    entrypoint: sh
+    args:
+      [
+        "-c",
+        'terraform -chdir=terraform plan -out=plan.out -var="api_image_name=us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/node-app:$SHORT_SHA" -var="project_id=$PROJECT_ID" -var="ui_image_name=us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/nginx-ui:$SHORT_SHA"',
+      ]
+  - id: "tf apply"
+    name: "hashicorp/terraform:1.0.0"
+    entrypoint: sh
+    args: ["-c", "terraform -chdir=terraform apply plan.out"]
