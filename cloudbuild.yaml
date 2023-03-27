@@ -24,9 +24,9 @@ steps:
     args:
       [
         "build",
+        "./api",
         "-t",
         "us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/node-app:$SHORT_SHA",
-        ".",
       ]
   - name: "gcr.io/cloud-builders/docker"
     args:
