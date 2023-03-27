@@ -52,7 +52,7 @@ resource "google_project_service" "cloud_run_api" {
   }
 }
 
-resource "google_project_service" "cloud_run_api" {
+resource "google_project_service" "cloud_resource_manager_run_api" {
   project = var.project_id
   service = "cloudresourcemanager.googleapis.com"
 
