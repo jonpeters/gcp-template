@@ -37,11 +37,19 @@ provider "google" {
 resource "google_project_service" "compute_api" {
   project = var.project_id
   service = "compute.googleapis.com"
+
+  timeouts {
+    create = "5m"
+  }
 }
 
 resource "google_project_service" "cloud_run_api" {
   project = var.project_id
   service = "run.googleapis.com"
+
+  timeouts {
+    create = "5m"
+  }
 }
 
 # cloud run service for the api
