@@ -52,6 +52,15 @@ resource "google_project_service" "cloud_run_api" {
   }
 }
 
+resource "google_project_service" "cloud_run_api" {
+  project = var.project_id
+  service = "cloudresourcemanager.googleapis.com"
+
+  timeouts {
+    create = "5m"
+  }
+}
+
 # cloud run service for the api
 resource "google_cloud_run_service" "api" {
   name     = local.service_name
