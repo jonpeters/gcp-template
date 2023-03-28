@@ -10,7 +10,7 @@ steps:
     args:
       [
         "build",
-        "./ui",
+        "./src/ui",
         "-t",
         "us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/nginx-ui:$SHORT_SHA",
       ]
@@ -24,7 +24,7 @@ steps:
     args:
       [
         "build",
-        "./api",
+        "./src/api",
         "-t",
         "us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/node-api:$SHORT_SHA",
       ]
