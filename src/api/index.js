@@ -7,7 +7,7 @@ const HOST = '0.0.0.0';
 const PORT = 8080;
 
 apiRouter.get("/", (request, response) => {
-    response.send("<h2>Response from root API</h2>");
+    response.send("Response from root API");
 });
 
 apiRouter.get("/json", (request, response) => {
