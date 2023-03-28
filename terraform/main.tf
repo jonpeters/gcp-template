@@ -34,13 +34,20 @@ provider "google" {
   zone    = "${local.region}-a"
 }
 
-resource "google_project_services" "cloud_resource_manager_api" {
-  project  = var.project_id
-  services = ["cloudresourcemanager.googleapis.com", "compute.googleapis.com", "run.googleapis.com"]
-
-  timeouts {
-    create = "5m"
+resource "null_resource" "enable_cloud_resource_manager_api" {
+  provisioner "local-exec" {
+    command = "gcloud services enable cloudresourcemanager.googleapis.com --project ${var.project_id}"
   }
+}
+
+resource "google_project_service" "compute_api" {
+  project = var.project_id
+  service = "compute.googleapis.com"
+}
+
+resource "google_project_service" "cloud_run_api" {
+  project = var.project_id
+  service = "run.googleapis.com"
 }
 
 # cloud run service for the api
