@@ -26,13 +26,13 @@ steps:
         "build",
         "./api",
         "-t",
-        "us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/node-app:$SHORT_SHA",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/node-api:$SHORT_SHA",
       ]
   - name: "gcr.io/cloud-builders/docker"
     args:
       [
         "push",
-        "us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/node-app:$SHORT_SHA",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/node-api:$SHORT_SHA",
       ]
   - id: "tf init"
     name: "hashicorp/terraform:1.0.0"
@@ -48,7 +48,7 @@ steps:
     args:
       [
         "-c",
-        'terraform -chdir=terraform plan -out=plan.out -var="api_image_name=us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/node-app:$SHORT_SHA" -var="project_id=$PROJECT_ID" -var="ui_image_name=us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/nginx-ui:$SHORT_SHA"',
+        'terraform -chdir=terraform plan -out=plan.out -var="api_image_name=us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/node-api:$SHORT_SHA" -var="project_id=$PROJECT_ID" -var="ui_image_name=us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/nginx-ui:$SHORT_SHA"',
       ]
   - id: "tf apply"
     name: "hashicorp/terraform:1.0.0"
