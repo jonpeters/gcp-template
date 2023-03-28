@@ -34,12 +34,6 @@ provider "google" {
   zone    = "${local.region}-a"
 }
 
-resource "null_resource" "enable_cloud_resource_manager_api" {
-  provisioner "local-exec" {
-    command = "gcloud services enable cloudresourcemanager.googleapis.com --project ${var.project_id}"
-  }
-}
-
 resource "google_project_service" "compute_api" {
   project = var.project_id
   service = "compute.googleapis.com"
