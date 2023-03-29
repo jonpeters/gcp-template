@@ -64,7 +64,8 @@ resource "google_cloud_run_service" "api" {
 
   metadata {
     annotations = {
-      "run.googleapis.com/ingress" = "internal-and-cloud-load-balancing"
+      "run.googleapis.com/ingress"            = "internal-and-cloud-load-balancing"
+      "run.googleapis.com/cloudsql-instances" = google_sql_database_instance.instance.name
     }
   }
 }
