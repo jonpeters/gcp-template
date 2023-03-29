@@ -22,16 +22,15 @@ const createTcpPool = async config => {
     return Knex(dbConfig);
 };
 
-let pool;
-
-(async () => {
-    pool = await createTcpPool({});
-})();
-
-apiRouter.get("/", async (request, response) => {
-    const result = await pool("stuff");
-    response.send(`Response from root API: ${result}`);
+apiRouter.get("/", (request, response) => {
+    response.send(`Response from root API`);
 });
+
+apiRouter.get("/test", async (request, response) => {
+    const pool = await createTcpPool({});
+    const results = await pool("stuff");
+    response.send(results);
+})
 
 apiRouter.get("/json", (request, response) => {
     response.setHeader('content-type', 'application/json');
