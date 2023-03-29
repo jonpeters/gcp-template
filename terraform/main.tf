@@ -16,6 +16,10 @@ locals {
   load_balancer_name = "my-lb"
   ssl_domain         = "test.com"
   region             = "us-central1"
+
+  database_user     = "user"
+  database_password = "password"
+  database_name     = "example"
 }
 
 terraform {
@@ -34,16 +38,6 @@ provider "google" {
   zone    = "${local.region}-a"
 }
 
-resource "google_project_service" "compute_api" {
-  project = var.project_id
-  service = "compute.googleapis.com"
-}
-
-resource "google_project_service" "cloud_run_api" {
-  project = var.project_id
-  service = "run.googleapis.com"
-}
-
 # cloud run service for the api
 resource "google_cloud_run_service" "api" {
   name     = local.service_name
@@ -60,22 +54,22 @@ resource "google_cloud_run_service" "api" {
 
         env {
           name  = "DATABASE_HOST"
-          value = google_sql_database_instance.instance.connection_name
+          value = "/cloudsql/${google_sql_database_instance.instance.connection_name}"
         }
 
         env {
           name  = "DATABASE_USER"
-          value = "postgres"
+          value = google_sql_user.users.name
         }
 
         env {
           name  = "DATABASE_PASSWORD"
-          value = "postgres"
+          value = google_sql_user.users.password
         }
 
         env {
           name  = "DATABASE_NAME"
-          value = "jon"
+          value = google_sql_database.database.name
         }
       }
     }
@@ -114,17 +108,17 @@ resource "google_cloud_run_service" "ui" {
         image = var.ui_image_name
       }
     }
+
+    metadata {
+      annotations = {
+        "run.googleapis.com/ingress" = "internal-and-cloud-load-balancing"
+      }
+    }
   }
 
   traffic {
     percent         = 100
     latest_revision = true
-  }
-
-  metadata {
-    annotations = {
-      "run.googleapis.com/ingress" = "internal-and-cloud-load-balancing"
-    }
   }
 }
 
@@ -253,12 +247,13 @@ resource "random_id" "db_name_suffix" {
   byte_length = 4
 }
 
+# cloud sql postgres instance w/ public ip (protected behind firewall)
 resource "google_sql_database_instance" "instance" {
   provider = google
 
   name                = "private-instance-${random_id.db_name_suffix.hex}"
   region              = "us-central1"
-  database_version    = "POSTGRES_13"
+  database_version    = "POSTGRES_14"
   deletion_protection = false
 
   depends_on = [google_service_networking_connection.private_vpc_connection]
@@ -269,6 +264,19 @@ resource "google_sql_database_instance" "instance" {
       ipv4_enabled = true
     }
   }
+}
+
+# create a database
+resource "google_sql_database" "database" {
+  name     = local.database_name
+  instance = google_sql_database_instance.instance.name
+}
+
+# create a database user
+resource "google_sql_user" "users" {
+  name     = local.database_user
+  password = local.database_password
+  instance = google_sql_database_instance.instance.name
 }
 
 # SSL (requires proof of domain ownership)
