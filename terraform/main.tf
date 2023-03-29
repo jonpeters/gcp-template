@@ -216,6 +216,14 @@ resource "google_compute_global_address" "private_ip_address" {
   network       = "default"
 }
 
+resource "google_service_networking_connection" "private_vpc_connection" {
+  provider = google
+
+  network                 = "default"
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
+}
+
 # SSL (requires proof of domain ownership)
 
 # resource "google_compute_managed_ssl_certificate" "default" {
