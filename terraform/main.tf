@@ -213,6 +213,7 @@ resource "google_compute_global_address" "private_ip_address" {
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
+  network       = "default"
 }
 
 # SSL (requires proof of domain ownership)
