@@ -206,6 +206,15 @@ resource "google_compute_global_forwarding_rule" "default" {
   ip_address            = google_compute_global_address.default.id
 }
 
+resource "google_compute_global_address" "private_ip_address" {
+  provider = google
+
+  name          = "private-ip-address"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 16
+}
+
 # SSL (requires proof of domain ownership)
 
 # resource "google_compute_managed_ssl_certificate" "default" {
