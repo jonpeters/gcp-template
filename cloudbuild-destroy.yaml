@@ -1,0 +1,17 @@
+steps:
+  - name: "hashicorp/terraform:1.0.0"
+    args:
+      - "-c"
+      - >-
+        terraform -chdir=terraform init -upgrade
+        -backend-config="bucket=$PROJECT_ID-tf-state"
+    id: tf init
+    entrypoint: sh
+  - name: "hashicorp/terraform:1.0.0"
+    args:
+      - "-c"
+      - >-
+        terraform -chdir=terraform destroy -var="project_id=$PROJECT_ID"
+        -var="ui_image_name=" -var="api_image_name=" -auto-approve
+    id: tf destroy
+    entrypoint: sh
