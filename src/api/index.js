@@ -1,3 +1,4 @@
+const Knex = require('knex');
 const { response } = require("express");
 const express = require("express");
 const app = express();
@@ -6,8 +7,30 @@ const apiRouter = express.Router();
 const HOST = '0.0.0.0';
 const PORT = 8080;
 
-apiRouter.get("/", (request, response) => {
-    response.send("Response from root API");
+const createTcpPool = async config => {
+    const dbConfig = {
+        client: 'pg',
+        connection: {
+            host: '10.120.0.3',
+            port: 5432,
+            user: 'postgres',
+            password: 'postgres',
+            database: 'jon',
+        },
+        ...config,
+    };
+    return Knex(dbConfig);
+};
+
+let pool;
+
+(async () => {
+    pool = await createTcpPool({});
+})();
+
+apiRouter.get("/", async (request, response) => {
+    const result = await pool("stuff");
+    response.send(`Response from root API: ${result}`);
 });
 
 apiRouter.get("/json", (request, response) => {
