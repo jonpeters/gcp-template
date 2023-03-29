@@ -241,8 +241,8 @@ resource "google_sql_database_instance" "instance" {
   settings {
     tier = "db-f1-micro"
     ip_configuration {
-      ipv4_enabled                                  = true
-      private_network                               = "default"
+      ipv4_enabled = true
+      # private_network                               = "default"
       enable_private_path_for_google_cloud_services = true
     }
   }
