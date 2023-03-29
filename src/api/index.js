@@ -11,8 +11,8 @@ const createTcpPool = async config => {
     const dbConfig = {
         client: 'pg',
         connection: {
-            host: '10.120.0.3',
-            port: 5432,
+            host: '/cloudsql/burner-1:us-central1:private-instance-fbf81c44',
+            // port: 5432,
             user: 'postgres',
             password: 'postgres',
             database: 'jon',
