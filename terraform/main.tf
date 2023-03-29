@@ -49,10 +49,34 @@ resource "google_cloud_run_service" "api" {
   name     = local.service_name
   location = local.region
 
+  depends_on = [
+    google_sql_database_instance.instance
+  ]
+
   template {
     spec {
       containers {
         image = var.api_image_name
+
+        env {
+          name  = "DATABASE_HOST"
+          value = google_sql_database_instance.instance.connection_name
+        }
+
+        env {
+          name  = "DATABASE_USER"
+          value = "postgres"
+        }
+
+        env {
+          name  = "DATABASE_PASSWORD"
+          value = "postgres"
+        }
+
+        env {
+          name  = "DATABASE_NAME"
+          value = "jon"
+        }
       }
     }
 
@@ -242,9 +266,7 @@ resource "google_sql_database_instance" "instance" {
   settings {
     tier = "db-f1-micro"
     ip_configuration {
-      ipv4_enabled                                  = true
-      private_network                               = "projects/${var.project_id}/global/networks/default"
-      enable_private_path_for_google_cloud_services = true
+      ipv4_enabled = true
     }
   }
 }

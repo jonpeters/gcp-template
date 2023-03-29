@@ -4,33 +4,28 @@ const express = require("express");
 const app = express();
 const apiRouter = express.Router();
 
-const HOST = '0.0.0.0';
-const PORT = 8080;
+const SERVER_HOST = '0.0.0.0';
+const SERVER_PORT = 8080;
 
-const createTcpPool = async config => {
-    const dbConfig = {
-        client: 'pg',
-        connection: {
-            host: '/cloudsql/burner-1:us-central1:private-instance-fbf81c44',
-            // port: 5432,
-            user: 'postgres',
-            password: 'postgres',
-            database: 'jon',
-        },
-        ...config,
-    };
-    return Knex(dbConfig);
-};
+const pool = Knex({
+    client: 'pg',
+    connection: {
+        host: process.env.DATABASE_HOST,
+        ...(process.env.DATABASE_PORT && { port: process.env.DATABASE_PORT }),
+        user: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_NAME,
+    }
+});
 
 apiRouter.get("/", (request, response) => {
     response.send(`Response from root API`);
 });
 
 apiRouter.get("/test", async (request, response) => {
-    const pool = await createTcpPool({});
     const results = await pool("stuff");
     response.send(results);
-})
+});
 
 apiRouter.get("/json", (request, response) => {
     response.setHeader('content-type', 'application/json');
@@ -43,5 +38,5 @@ apiRouter.get("/json", (request, response) => {
 app.use('/api', apiRouter);
 
 app.listen(PORT, HOST, () => {
-    console.log(`Listening on ${HOST}:${PORT}`);
+    console.log(`Listening on ${SERVER_HOST}:${SERVER_PORT}`);
 });
