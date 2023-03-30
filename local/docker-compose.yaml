@@ -14,14 +14,14 @@ services:
   react-ui:
     image: react-ui
     build:
-      context: ../src/ui
-      dockerfile: Dockerfile.dev
+      context: ../ui
+      dockerfile: Dockerfile
       target: development
     ports:
       - 3000:3000
     container_name: react-ui
     volumes:
-      - ../src/ui/src:/app/src
+      - ../ui/src:/app/src
     networks:
       - app-network
   node-api:
