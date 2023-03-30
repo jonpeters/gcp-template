@@ -17,8 +17,6 @@ services:
       context: ../src/ui
       dockerfile: Dockerfile.dev
       target: development
-      args:
-        - REACT_APP_API_HOST=http://localhost:8080
     ports:
       - 3000:3000
     container_name: react-ui

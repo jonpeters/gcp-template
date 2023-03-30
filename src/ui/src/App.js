@@ -13,15 +13,13 @@ import { Card } from '@mui/material';
 import CardContent from '@mui/material/CardContent';
 import TextField from '@mui/material/TextField';
 
-const API_HOST = process.env.REACT_APP_API_HOST || '';
-
 function App() {
   const [text, setText] = useState('');
   const [results, setResults] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const fetchedResults = await fetch(`${API_HOST}/api/read`);
+      const fetchedResults = await fetch("/api/read");
       const data = await fetchedResults.json();
       setResults(data);
     })();
@@ -34,7 +32,7 @@ function App() {
 
   const handleSaveClick = async () => {
     if (text.trim()) {
-      await fetch(`${API_HOST}/api/write`, {
+      await fetch("/api/write", {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
         body: text

@@ -1,8 +1,6 @@
 FROM node:16.17.1-alpine3.16 as build
 WORKDIR /app
 COPY . /app
-ARG REACT_APP_API_HOST
-ENV REACT_APP_API_HOST $REACT_APP_API_HOST
 RUN npm ci
 RUN npm run build
 
