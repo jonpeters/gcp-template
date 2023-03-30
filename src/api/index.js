@@ -1,5 +1,4 @@
 const Knex = require('knex');
-const { response } = require("express");
 const express = require("express");
 const app = express();
 const apiRouter = express.Router();
@@ -35,7 +34,6 @@ apiRouter.get("/read", async (request, response) => {
 });
 
 app.use('/api', apiRouter);
-
 
 app.listen(SERVER_PORT, SERVER_HOST, () => {
     console.log(`Listening on ${SERVER_HOST}:${SERVER_PORT}`);
