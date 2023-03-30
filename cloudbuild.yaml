@@ -27,6 +27,8 @@ steps:
         "./api",
         "-t",
         "us-central1-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REPOSITORY_NAME/node-api:$SHORT_SHA",
+        "--target",
+        "production",
       ]
   - name: "gcr.io/cloud-builders/docker"
     args:
