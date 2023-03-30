@@ -18,13 +18,20 @@ const pool = Knex({
     }
 });
 
+app.use(express.text());
+
 apiRouter.get("/", (request, response) => {
     response.send(`Response from root API`);
 });
 
-apiRouter.get("/test", async (request, response) => {
+apiRouter.post("/write", async (request, response) => {
+    await pool.insert({ name: request.body }).into("stuff");
+    response.send("OK");
+});
+
+apiRouter.get("/read", async (request, response) => {
     const results = await pool("stuff");
-    response.send(results);
+    response.json(results);
 });
 
 apiRouter.get("/json", (request, response) => {
@@ -36,6 +43,7 @@ apiRouter.get("/json", (request, response) => {
 });
 
 app.use('/api', apiRouter);
+
 
 app.listen(SERVER_PORT, SERVER_HOST, () => {
     console.log(`Listening on ${SERVER_HOST}:${SERVER_PORT}`);
