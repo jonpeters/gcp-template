@@ -27,7 +27,7 @@ services:
   node-api:
     image: node-api
     build:
-      context: ../src/api
+      context: ../api
       dockerfile: Dockerfile
       target: base
     ports:
@@ -41,8 +41,8 @@ services:
       - DATABASE_NAME=example
     command: npm run dev
     volumes:
-      - ../src/api:/app/
-      - ../src/api/nodemon.json:/app/nodemon.json
+      - ../api:/app/
+      - ../api/nodemon.json:/app/nodemon.json
     networks:
       - app-network
   nginx-server:
