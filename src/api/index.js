@@ -34,14 +34,6 @@ apiRouter.get("/read", async (request, response) => {
     response.json(results);
 });
 
-apiRouter.get("/json", (request, response) => {
-    response.setHeader('content-type', 'application/json');
-    response.json({
-        "user": "Jon",
-        "country": "USA"
-    });
-});
-
 app.use('/api', apiRouter);
 
 
