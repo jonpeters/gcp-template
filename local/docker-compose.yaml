@@ -29,6 +29,7 @@ services:
     build:
       context: ../src/api
       dockerfile: Dockerfile
+      target: base
     ports:
       - 8082:8080
     container_name: node-api
@@ -38,7 +39,10 @@ services:
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=postgres
       - DATABASE_NAME=example
-    restart: unless-stopped
+    command: npm run dev
+    volumes:
+      - ../src/api:/app/
+      - ../src/api/nodemon.json:/app/nodemon.json
     networks:
       - app-network
   nginx-server:
