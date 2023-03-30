@@ -37,6 +37,6 @@ apiRouter.get("/json", (request, response) => {
 
 app.use('/api', apiRouter);
 
-app.listen(PORT, HOST, () => {
+app.listen(SERVER_PORT, SERVER_HOST, () => {
     console.log(`Listening on ${SERVER_HOST}:${SERVER_PORT}`);
 });
